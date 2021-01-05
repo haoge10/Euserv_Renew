@@ -1,0 +1,32 @@
+name: 'Euserv Auto Renew'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '22 22 * * 1,3,5'
+
+jobs:
+  auto_renew:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Codes'
+        uses: actions/checkout@v2
+
+      - name: 'Set Python'
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.x'
+
+      - name: 'Install Dependencies'
+        run: |
+          python -m pip install --upgrade requests
+          python -m pip install --upgrade beautifulsoup4
+
+      - name: 'Auto Renew'
+        env:
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: python main.py
